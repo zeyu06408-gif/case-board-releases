@@ -175,6 +175,14 @@ jobs:
       - name: 构建 macOS App、DMG 与更新签名
         run: pnpm tauri build --target "${{ matrix.target }}" --bundles app,dmg
 
+      - name: 嵌入并验证安装前阅读说明
+        shell: bash
+        run: |
+          set -euo pipefail
+          dmg_file="$(find "target/${{ matrix.target }}/release/bundle/dmg" -maxdepth 1 -name '*.dmg' -print -quit)"
+          test -n "$dmg_file"
+          bash scripts/embed-macos-readme.sh "$dmg_file"
+
       - name: 整理 macOS 发布文件
         shell: bash
         run: |
@@ -191,7 +199,6 @@ jobs:
           cp "$updater_file" "$updater_target"
           cp "${updater_file}.sig" "${updater_target}.sig"
           cp "$dmg_file" "$dmg_target"
-          cp scripts/请先阅读.txt "release-assets/请先阅读_macOS_${{ matrix.arch }}.txt"
 
       - name: 暂存 macOS 产物
         uses: actions/upload-artifact@v4
