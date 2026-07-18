@@ -1,19 +1,19 @@
 {
-  "version": "0.4.5",
-  "notes": "修复 macOS 安装包未显示安装前阅读说明的问题",
-  "pub_date": "2026-07-18T06:49:52Z",
+  "version": "0.4.6",
+  "notes": "修复发布缓存可能误取旧版 Windows 安装器的问题",
+  "pub_date": "2026-07-18T16:33:52Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb015V0VzYndwZ1IwRFZtOXdIcHlRZ3NPT3YxM0c5a2RwOFFuYnVhNlRqRHQxc1B2YmFFUk1zNjhFNkZVN3N5ekVxWVdUL08xdjVmRDVmbzIzK3dmTnd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzUwMzE4CWZpbGU65qGI5Lu255yL5p2/XzAuNC40X3g2NC1zZXR1cC5leGUKdWpuKzUxZmxoV3VQUnhvN0hYVXMvenJZdllTcm5HeVRTaVFGRnlydGI5U0g2UjNGWGpqSElTbVNIdXpPYnJQT2ovN09hYXRtaDJpL1k2Q0tEWjlOQXc9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.5/case-board_0.4.5_windows_x86_64-setup.exe.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb1A4b0dOdkR6ZjNlRDFzVmFpOHg1YVZBUzZ2eG02Tlh3a2tEejErYTA2VXlYYTdHQWZxcjBzYkJiaGJsTU9NYm9LT09WWmdJUkJNeWxadGROUDlwNGdBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzkyNDAwCWZpbGU65qGI5Lu255yL5p2/XzAuNC42X3g2NC1zZXR1cC5leGUKb3B2cWl3S3IyZUdUbk5RUjdnVnFnTVNiTVBJNitac2gwaFdOVXVkeUdXakJqTzgvWW9wV2NtVEdDZGtqalQxZEh4SS95TGFpREJRNzY2UW5zNHFlQVE9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.6/case-board_0.4.6_windows_x86_64-setup.exe.bin"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb01WMXZ0b3Y2N2tDUU1ZWjN0UnZVWERvRXJrU3ZqMGxYYUhBQkNZRjBrV2tSTnRrL3BGQkJnVTNCdzF0dk8vWldXdTAyanJab1ZEanZQT0RINjg5U1FVPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzU3MDg5CWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKbGJpYjhnT2N5TkV0TVFqbDAzUHdQRXk2STZ4VUF3RTRENjd2a3BuTjFvM09BTkpnMmUyNTBuRzF2cmdsMS9kZjZvcjJZRTZURktubUZubGxZdmFsRHc9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.5/case-board_0.4.5_macos_aarch64.app.tar.gz.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0NxbVlvWVBGNFhXaUhHbjdNSmpJSDVZTHl4Ti9yNmN0TlBaUklrbUtrc3cvZjBtZ2xnbkRhR2ZpM3h5Lzg5Y3ZFUUQ0eDAxQXRYRjB2em5GTDExNVEwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzkyMDgxCWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKTU9pTTh3Y1NFQUJoVnZvNGRabjNxclVERVlnalpDZFoxZ0h0amhpZHRZTk85NVg2cVo4MER5U0pQL2owdlhFTTFDSzRNWUlSSEV6ZzZoYlhIdkNnQ0E9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.6/case-board_0.4.6_macos_aarch64.app.tar.gz.bin"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb000NjJXM1hYandrUTJ5TWhiWjc3eVRaWFVnSllqZisrUzRoZlA0RlN4bXc0bmhCTitiK3VkcHNKalBKV29uUS9ieUQ0ZVlZUW55RlpyUWxma3g2OUFvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzU3MzQwCWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKRW5KV3ZQb0R2bVZycHlxMHc2S0V5bk5vUk1xc1M0dytia0NIR0w1Y0c5R2k5SFBDU2p2bmQzUXZSU0dBb1lrU1cvMWU5ZVV5NGFqMEtFUWRONW5oQVE9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.5/case-board_0.4.5_macos_x86_64.app.tar.gz.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0NKMXpIUFlTSWVwZmVNMGd0YmxiSWFtb1pMUkh1ejl3ZGZ1MkR6QVlnb0JZWm9ZZHY1ZjJRbHN6RmQ0MDQzR01rdjIvTEJJYjBrbTJYMm9MR2VIWEE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzkyMzQ0CWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKNlZ2QmY2N1JQNDdBNTcrMmhNaktQZDhqTVFmMUVZQlVVNHZZUTEzY3lNdUlsTlR0dkh1eWwxdFVVZDFmUDVSVjlYZG9ZMVhjNHF5SWdENUNpYVR4QXc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.6/case-board_0.4.6_macos_x86_64.app.tar.gz.bin"
     }
   }
 }
