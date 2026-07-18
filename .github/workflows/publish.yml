@@ -81,6 +81,11 @@ jobs:
       - name: 安装锁定依赖
         run: pnpm install --frozen-lockfile
 
+      - name: 清理缓存中的旧 Windows 安装器
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force target/x86_64-pc-windows-msvc/release/bundle -ErrorAction SilentlyContinue
+
       - name: 构建 Windows NSIS 与更新签名
         run: pnpm tauri build --target x86_64-pc-windows-msvc --bundles nsis
 
@@ -88,8 +93,16 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force release-assets | Out-Null
-          $installer = Get-ChildItem target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe | Select-Object -First 1
-          if (-not $installer) { throw "未找到 Windows NSIS 安装包" }
+          $installers = @(
+            Get-ChildItem target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe |
+              Where-Object { $_.Name -like "*_$($env:RELEASE_VERSION)_*" }
+          )
+          if ($installers.Count -ne 1) {
+            throw "期望唯一的 Windows ${env:RELEASE_VERSION} NSIS，实际找到 $($installers.Count) 个：$($installers.Name -join ', ')"
+          }
+          $installer = $installers[0]
+          if (-not (Test-Path "$($installer.FullName).sig")) { throw "Windows 更新签名不存在" }
+          Write-Host "选定 Windows 安装器：$($installer.Name)"
           $target = "release-assets/case-board_${env:RELEASE_VERSION}_windows_x86_64-setup.exe"
           Copy-Item $installer.FullName $target
           Copy-Item "$($installer.FullName).sig" "$target.sig"
@@ -172,6 +185,10 @@ jobs:
       - name: 安装锁定依赖
         run: pnpm install --frozen-lockfile
 
+      - name: 清理缓存中的旧 macOS 安装器
+        shell: bash
+        run: rm -rf "target/${{ matrix.target }}/release/bundle"
+
       - name: 构建 macOS App、DMG 与更新签名
         run: pnpm tauri build --target "${{ matrix.target }}" --bundles app,dmg
 
@@ -179,21 +196,30 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          dmg_file="$(find "target/${{ matrix.target }}/release/bundle/dmg" -maxdepth 1 -name '*.dmg' -print -quit)"
-          test -n "$dmg_file"
-          bash scripts/embed-macos-readme.sh "$dmg_file"
+          shopt -s nullglob
+          dmg_files=("target/${{ matrix.target }}/release/bundle/dmg/"*_"${RELEASE_VERSION}"_*.dmg)
+          if [[ ${#dmg_files[@]} -ne 1 ]]; then
+            echo "期望唯一的 macOS ${RELEASE_VERSION} DMG，实际找到 ${#dmg_files[@]} 个" >&2
+            exit 1
+          fi
+          bash scripts/embed-macos-readme.sh "${dmg_files[0]}"
 
       - name: 整理 macOS 发布文件
         shell: bash
         run: |
           set -euo pipefail
+          shopt -s nullglob
           mkdir -p release-assets
           bundle_dir="target/${{ matrix.target }}/release/bundle"
-          updater_file="$(find "$bundle_dir/macos" -maxdepth 1 -name '*.app.tar.gz' -print -quit)"
-          dmg_file="$(find "$bundle_dir/dmg" -maxdepth 1 -name '*.dmg' -print -quit)"
-          test -n "$updater_file"
+          updater_files=("$bundle_dir/macos/"*.app.tar.gz)
+          dmg_files=("$bundle_dir/dmg/"*_"${RELEASE_VERSION}"_*.dmg)
+          if [[ ${#updater_files[@]} -ne 1 || ${#dmg_files[@]} -ne 1 ]]; then
+            echo "macOS 产物数量错误：updater=${#updater_files[@]}，dmg=${#dmg_files[@]}" >&2
+            exit 1
+          fi
+          updater_file="${updater_files[0]}"
+          dmg_file="${dmg_files[0]}"
           test -f "${updater_file}.sig"
-          test -n "$dmg_file"
           updater_target="release-assets/case-board_${RELEASE_VERSION}_macos_${{ matrix.arch }}.app.tar.gz"
           dmg_target="release-assets/case-board_${RELEASE_VERSION}_macos_${{ matrix.arch }}.dmg"
           cp "$updater_file" "$updater_target"
