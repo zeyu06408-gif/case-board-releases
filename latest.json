@@ -1,0 +1,19 @@
+{
+  "version": "0.4.4",
+  "notes": "兼容 MinerU 新版 sk- Key，并新增 Windows 与 macOS 应用内签名更新",
+  "pub_date": "2026-07-18T04:53:46Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb015V0VzYndwZ1IwRFZtOXdIcHlRZ3NPT3YxM0c5a2RwOFFuYnVhNlRqRHQxc1B2YmFFUk1zNjhFNkZVN3N5ekVxWVdUL08xdjVmRDVmbzIzK3dmTnd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzUwMzE4CWZpbGU65qGI5Lu255yL5p2/XzAuNC40X3g2NC1zZXR1cC5leGUKdWpuKzUxZmxoV3VQUnhvN0hYVXMvenJZdllTcm5HeVRTaVFGRnlydGI5U0g2UjNGWGpqSElTbVNIdXpPYnJQT2ovN09hYXRtaDJpL1k2Q0tEWjlOQXc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.4/case-board_0.4.4_windows_x86_64-setup.exe.bin"
+    },
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0w5bCtPSUQrWlAyam5nVUtkWUV1ODVMT2ltUUl2cjZPdWMxZG4zQndac2pQemIyZkZiVS9Mand0OXZ5eDVNNjRUamxrbzcxYlNIRlZGOFNsOXNOZFFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzQ5OTY1CWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKUkpIcXNxWnQzQ0dIK1I4eUEwMkFvZ0RDK0pxMVRvTHY3cFhlQm04eCt1S3EyZ2dha2cyU2xqNEM1b0NPczEwdS94VVJjWlNCbUF3ZkVxWkxCV3ZTRGc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.4/case-board_0.4.4_macos_aarch64.app.tar.gz.bin"
+    },
+    "darwin-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0RUMmF0RmhHSkNvUTV4cUpjMWhCN01iM0ovRXpLYy9MYUZFbnBqZHFWZTBGWWtrNTRNUGVoSDJ5TTE2b1o0L2JueUx5c2p4bTBXMUhLd2MySWt2ZVFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MzUwMzYwCWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKL0V1eGV2YTBPTzZ6WWRMN3dJdUkyTVZFN3h1NkhxY21FWGN0N3c4TzNUU2ZiSFhDN1J4M2R0V2JBZnlmUDBCUVdLanM1K3h1RFpYc3pRRVNBTUk5QXc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.4/case-board_0.4.4_macos_x86_64.app.tar.gz.bin"
+    }
+  }
+}
