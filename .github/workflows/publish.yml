@@ -1,0 +1,320 @@
+name: 发布 Windows 与 macOS 签名版本
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号（必须与源码三处版本一致，如 0.4.4）"
+        required: true
+        type: string
+      source_ref:
+        description: "案件看板私有源码的分支、标签或完整提交 SHA"
+        required: true
+        default: "main"
+        type: string
+      release_notes:
+        description: "本次更新说明"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: 构建 Windows 10/11 x64
+    runs-on: windows-2022
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+    steps:
+      - name: 读取私有源码
+        uses: actions/checkout@v4
+        with:
+          repository: zeyu06408-gif/case-board
+          ref: ${{ inputs.source_ref }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 配置 pnpm
+        id: pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.4 --activate
+          echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: 恢复 pnpm 缓存
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm.outputs.store_path }}
+          key: windows-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: windows-pnpm-
+
+      - name: 配置 Rust
+        shell: bash
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add x86_64-pc-windows-msvc
+
+      - name: 恢复 Rust 缓存
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: windows-rust-x86_64-pc-windows-msvc-${{ hashFiles('Cargo.lock') }}
+          restore-keys: windows-rust-
+
+      - name: 核对版本号
+        shell: bash
+        run: |
+          node -e 'const fs=require("fs"); const expected=process.env.RELEASE_VERSION; const pkg=JSON.parse(fs.readFileSync("package.json")); const conf=JSON.parse(fs.readFileSync("src-tauri/tauri.conf.json")); const cargo=fs.readFileSync("src-tauri/Cargo.toml","utf8").match(/^version = "([^"]+)"/m)?.[1]; const versions=[pkg.version,conf.version,cargo]; if(versions.some(v=>v!==expected)){console.error(`版本不一致：期望 ${expected}，实际 ${versions.join(" / ")}`); process.exit(1)}'
+
+      - name: 安装锁定依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建 Windows NSIS 与更新签名
+        run: pnpm tauri build --target x86_64-pc-windows-msvc --bundles nsis
+
+      - name: 整理 Windows 发布文件
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release-assets | Out-Null
+          $installer = Get-ChildItem target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe | Select-Object -First 1
+          if (-not $installer) { throw "未找到 Windows NSIS 安装包" }
+          $target = "release-assets/case-board_${env:RELEASE_VERSION}_windows_x86_64-setup.exe"
+          Copy-Item $installer.FullName $target
+          Copy-Item "$($installer.FullName).sig" "$target.sig"
+
+      - name: 暂存 Windows 产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 3
+
+  build-macos:
+    name: 构建 macOS ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            target: aarch64-apple-darwin
+            arch: aarch64
+          - runner: macos-15-intel
+            target: x86_64-apple-darwin
+            arch: x86_64
+    runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+    steps:
+      - name: 读取私有源码
+        uses: actions/checkout@v4
+        with:
+          repository: zeyu06408-gif/case-board
+          ref: ${{ inputs.source_ref }}
+          ssh-key: ${{ secrets.SOURCE_DEPLOY_KEY }}
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 配置 pnpm
+        id: pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.34.4 --activate
+          echo "store_path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - name: 恢复 pnpm 缓存
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm.outputs.store_path }}
+          key: macos-${{ matrix.arch }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: macos-${{ matrix.arch }}-pnpm-
+
+      - name: 配置 Rust
+        shell: bash
+        run: |
+          rustup update stable
+          rustup default stable
+          rustup target add "${{ matrix.target }}"
+
+      - name: 恢复 Rust 缓存
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: macos-${{ matrix.arch }}-rust-${{ hashFiles('Cargo.lock') }}
+          restore-keys: macos-${{ matrix.arch }}-rust-
+
+      - name: 核对版本号
+        shell: bash
+        run: |
+          node -e 'const fs=require("fs"); const expected=process.env.RELEASE_VERSION; const pkg=JSON.parse(fs.readFileSync("package.json")); const conf=JSON.parse(fs.readFileSync("src-tauri/tauri.conf.json")); const cargo=fs.readFileSync("src-tauri/Cargo.toml","utf8").match(/^version = "([^"]+)"/m)?.[1]; const versions=[pkg.version,conf.version,cargo]; if(versions.some(v=>v!==expected)){console.error(`版本不一致：期望 ${expected}，实际 ${versions.join(" / ")}`); process.exit(1)}'
+
+      - name: 安装锁定依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 构建 macOS App、DMG 与更新签名
+        run: pnpm tauri build --target "${{ matrix.target }}" --bundles app,dmg
+
+      - name: 整理 macOS 发布文件
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          bundle_dir="target/${{ matrix.target }}/release/bundle"
+          updater_file="$(find "$bundle_dir/macos" -maxdepth 1 -name '*.app.tar.gz' -print -quit)"
+          dmg_file="$(find "$bundle_dir/dmg" -maxdepth 1 -name '*.dmg' -print -quit)"
+          test -n "$updater_file"
+          test -f "${updater_file}.sig"
+          test -n "$dmg_file"
+          updater_target="release-assets/case-board_${RELEASE_VERSION}_macos_${{ matrix.arch }}.app.tar.gz"
+          dmg_target="release-assets/case-board_${RELEASE_VERSION}_macos_${{ matrix.arch }}.dmg"
+          cp "$updater_file" "$updater_target"
+          cp "${updater_file}.sig" "${updater_target}.sig"
+          cp "$dmg_file" "$dmg_target"
+          cp scripts/请先阅读.txt "release-assets/请先阅读_macOS_${{ matrix.arch }}.txt"
+
+      - name: 暂存 macOS 产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-macos-${{ matrix.arch }}
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 3
+
+  publish:
+    name: 汇总、验证并发布
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_VERSION: ${{ inputs.version }}
+      RELEASE_NOTES: ${{ inputs.release_notes }}
+    steps:
+      - name: 读取更新仓库
+        uses: actions/checkout@v4
+        with:
+          path: publisher
+
+      - name: 汇总三平台产物
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: 生成三平台更新清单
+        shell: bash
+        run: |
+          set -euo pipefail
+          windows_file="case-board_${RELEASE_VERSION}_windows_x86_64-setup.exe"
+          mac_arm_file="case-board_${RELEASE_VERSION}_macos_aarch64.app.tar.gz"
+          mac_intel_file="case-board_${RELEASE_VERSION}_macos_x86_64.app.tar.gz"
+          cdn_base="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/updates/v${RELEASE_VERSION}"
+          jq -n \
+            --arg version "$RELEASE_VERSION" \
+            --arg notes "$RELEASE_NOTES" \
+            --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg windows_signature "$(tr -d '\r\n' < "release-assets/${windows_file}.sig")" \
+            --arg windows_url "${cdn_base}/${windows_file}.bin" \
+            --arg mac_arm_signature "$(tr -d '\r\n' < "release-assets/${mac_arm_file}.sig")" \
+            --arg mac_arm_url "${cdn_base}/${mac_arm_file}.bin" \
+            --arg mac_intel_signature "$(tr -d '\r\n' < "release-assets/${mac_intel_file}.sig")" \
+            --arg mac_intel_url "${cdn_base}/${mac_intel_file}.bin" \
+            '{version:$version,notes:$notes,pub_date:$pub_date,platforms:{"windows-x86_64":{signature:$windows_signature,url:$windows_url},"darwin-aarch64":{signature:$mac_arm_signature,url:$mac_arm_url},"darwin-x86_64":{signature:$mac_intel_signature,url:$mac_intel_url}}}' \
+            > release-assets/latest.json
+          jq -e \
+            --arg version "$RELEASE_VERSION" \
+            '.version == $version and ([.platforms["windows-x86_64"], .platforms["darwin-aarch64"], .platforms["darwin-x86_64"]] | all(.signature != "" and (.url | startswith("https://"))))' \
+            release-assets/latest.json >/dev/null
+
+      - name: 发布大陆可访问的版本化文件
+        shell: bash
+        run: |
+          set -euo pipefail
+          version_dir="publisher/updates/v${RELEASE_VERSION}"
+          mkdir -p "$version_dir"
+          for file in \
+            "case-board_${RELEASE_VERSION}_windows_x86_64-setup.exe" \
+            "case-board_${RELEASE_VERSION}_macos_aarch64.app.tar.gz" \
+            "case-board_${RELEASE_VERSION}_macos_x86_64.app.tar.gz"
+          do
+            cp "release-assets/${file}" "${version_dir}/${file}.bin"
+          done
+          cp release-assets/latest.json publisher/latest.json
+          cd publisher
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add latest.json "updates/v${RELEASE_VERSION}"
+          git commit -m "release: publish signed updates for ${RELEASE_VERSION}"
+          git push origin HEAD:main
+
+      - name: 验证客户端第一更新地址
+        shell: bash
+        run: |
+          set -euo pipefail
+          raw_endpoint="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/latest.json"
+          valid="false"
+          for attempt in $(seq 1 6); do
+            if curl --fail --silent --show-error \
+              -H 'Cache-Control: no-cache' \
+              "${raw_endpoint}?run=${GITHUB_RUN_ID}-${attempt}" \
+              | jq -e \
+                --arg version "$RELEASE_VERSION" \
+                '.version == $version and (.platforms | has("windows-x86_64") and has("darwin-aarch64") and has("darwin-x86_64"))' \
+                >/dev/null
+            then
+              valid="true"
+              echo "Raw 主更新地址已返回 ${RELEASE_VERSION} 的三平台清单"
+              break
+            fi
+            echo "第 ${attempt} 次 Raw 校验未通过，5 秒后重试"
+            sleep 5
+          done
+          if [ "$valid" != "true" ]; then
+            echo "Raw 主更新地址未返回完整三平台清单，拒绝宣告发布成功" >&2
+            exit 1
+          fi
+
+          cdn_endpoint="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/latest.json"
+          cdn_version="$(curl --fail --silent --show-error "$cdn_endpoint" | jq -r '.version // empty' || true)"
+          if [ "$cdn_version" = "$RELEASE_VERSION" ]; then
+            echo "CDN 备用清单已返回 ${RELEASE_VERSION}"
+          else
+            echo "::warning::CDN 备用清单暂时返回 ${cdn_version:-无版本}；Raw 主更新地址正常，不阻断发布。"
+          fi
+
+      - name: 创建 GitHub Release
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="app-v${RELEASE_VERSION}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "版本 ${tag} 已存在，拒绝覆盖。" >&2
+            exit 1
+          fi
+          gh release create "$tag" release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --target main \
+            --title "案件看板 v${RELEASE_VERSION}" \
+            --notes "$RELEASE_NOTES" \
+            --latest
