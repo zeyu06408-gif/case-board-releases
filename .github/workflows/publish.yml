@@ -293,11 +293,13 @@ jobs:
           do
             cp "release-assets/${file}" "${version_dir}/${file}.bin"
           done
-          cp release-assets/latest.json publisher/latest.json
+          mkdir -p publisher/updates
+          cp release-assets/latest.json publisher/updates/latest.json
+          rm -f publisher/latest.json
           cd publisher
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add latest.json "updates/v${RELEASE_VERSION}"
+          git add -A latest.json updates/latest.json "updates/v${RELEASE_VERSION}"
           git commit -m "release: publish signed updates for ${RELEASE_VERSION}"
           git push origin HEAD:main
 
@@ -305,7 +307,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          raw_endpoint="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/latest.json"
+          raw_endpoint="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/updates/latest.json"
           valid="false"
           for attempt in $(seq 1 6); do
             if curl --fail --silent --show-error \
@@ -328,7 +330,7 @@ jobs:
             exit 1
           fi
 
-          cdn_endpoint="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/latest.json"
+          cdn_endpoint="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@main/updates/latest.json"
           cdn_version="$(curl --fail --silent --show-error "$cdn_endpoint" | jq -r '.version // empty' || true)"
           if [ "$cdn_version" = "$RELEASE_VERSION" ]; then
             echo "CDN 备用清单已返回 ${RELEASE_VERSION}"
