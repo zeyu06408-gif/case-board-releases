@@ -1,19 +1,19 @@
 {
-  "version": "0.4.7",
-  "notes": "新增案件撤诉阶段并让撤诉案件沉底、停止提醒；日历折叠摘要自动收起过期事项并强化手工日程删除；完善材料抽取失败诊断、编码兼容、权限预检、有限重试及一键修复并分析。",
-  "pub_date": "2026-08-17T08:25:35Z",
+  "version": "0.4.8",
+  "notes": "修复部分网络环境下检查更新响应正文解码失败，并兼容第40号数据库迁移已确认的尾部空行校验变体，避免更新后启动意外退出。",
+  "pub_date": "2026-08-17T09:40:29Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0VzK2FuODJ5eTBoS1JMQ0VVaERmY0JtSE1CejRocURPWCtpeHZuUVdja0ZEZDFMSSt3Z2dRb0Uycmt5SkU1NHZFenpISnY5ZDZsRWFxdjA1dy9HRkFNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU1MDU0CWZpbGU65qGI5Lu255yL5p2/XzAuNC43X3g2NC1zZXR1cC5leGUKeUlYMmZYSkQwc3dqdkQzMG1SQnhCY0pRRFJUNGlEbk1ta042dnI0eVgrdThSY3JBTVVCcCtyRjB2SVFjNnhiUXpYWURPRmd4YlpBcWdCM3NWd0dnQlE9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.7/case-board_0.4.7_windows_x86_64-setup.exe.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0xFaG9Gd3Exc2pkKzM3NkxjeS8xR2kyYmtBNnJmV2c5QWlJendKSFVpN0x5VzZEWXNydnNDcmFPUnU2bVB4WXBiMTNuQjd0RzdPbnpONmd5NzNIcEFBPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU5MzQ4CWZpbGU65qGI5Lu255yL5p2/XzAuNC44X3g2NC1zZXR1cC5leGUKVHdRNEZDeXVOa2RoN0Z6Q3ZEUmROZDdmSjdIR1Z4NXFBM3d3R1BwdjMvOWlvdnlidHJOKzQ4Z080dExmbjV1c2JmQ3NNVVc0R1ZvZTBBYTNKN2t3QWc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.8/case-board_0.4.8_windows_x86_64-setup.exe.bin"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0xudjY4blo1TjQvTk5HVmF5NXNZc3NvU2ZwZWJaYW9DYjB5SG95TjF4dXp1dUd2ajNFNWduTVYzRnRlL0ZVT0c0d2NHQ2xlR25KRllLTG5PZ2JqVHdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU0NzYzCWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKZXJBQnBray9LVmNOdjlhelc0REVjNUd2emU5cEsvN1dsT2tPcU1ZODkxY003eThvUG9KV2VRZFlaRGxRWVhrOGJmck1EMzNqc1NoYmFFWmFXc1NMRHc9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.7/case-board_0.4.7_macos_aarch64.app.tar.gz.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0JnYVhCT2U2YS9WRmxKRWpaR0xaV3c5U0g2WWIySlFhM1JJT2dYbFlwVWFNaVJ2MkJvK2hZdHFoakVPSFhGUTQzUUxaaUhjTjdaTVEwcmx0T09FWkF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU5Mjk5CWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKaFExRVB6endXMG9JTDFmdnZkUjJHNmZzUVdoTnFYTXpjcWdMY3RPOGFRdjZmREcyclBTM1dYT1JzQ2RKbWYrZHdkVTZ3bGZFTmVHTjFXMUZxelZIQkE9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.8/case-board_0.4.8_macos_aarch64.app.tar.gz.bin"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb0NTTDB3c0V4YmE5ZFhhU1JyUTMrbk5IUHhXQUVKNC9zOE1CR2tLYktyTTNMcExCZnBGYVY2TWlNZ092U2NEVkxySVJndDNnOUlnbFNkVFFkWHJESGdvPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU1MDcwCWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKb0FaZTJwdlJGdEUyeFlhb3FzUDBNdjdGVlIvU3ZrZFlIVW0zbUloeWVGTVFNblRGc3U5TDFyNTBSVEgvbFVrdUIrU3VkeGVpejB4WjlUZmxRaDN1QWc9PQo=",
-      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.7/case-board_0.4.7_macos_x86_64.app.tar.gz.bin"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVTVVhHUWM2S1VIb1BVY3BEdDMyVDVaV3lFTldTUEJVSEtIclZBdWszMEZrUnlvaFpCTG5YRWZ0VXVVSHI1VWI0N0VTNXBHdnIvMjdBVTlPZS9wVlY1S2NadmdnZHJSMkE0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg2OTU5NTc2CWZpbGU65qGI5Lu255yL5p2/LmFwcC50YXIuZ3oKS0F0d092cUtOZE5qZ1crOG1BWW1YdVNuWW5tZTJGWXZjWS9XRXFYNkZJUmRVVEgyWmR2QkJjaDdvVjFTR3VIUkE4UzFRK2pkV3VxdlNpekczQSsrQnc9PQo=",
+      "url": "https://cdn.jsdelivr.net/gh/zeyu06408-gif/case-board-releases@main/updates/v0.4.8/case-board_0.4.8_macos_x86_64.app.tar.gz.bin"
     }
   }
 }
